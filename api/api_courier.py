@@ -1,8 +1,9 @@
 import requests
+from data.data import Data
 
 class CourierApi:
     def __init__(self):
-        self.base_url = "https://qa-scooter.praktikum-services.ru/api/v1/courier"
+        self.base_url = Data.courier_url
 
     def create_courier(self, login, password, first_name):
         payload = {

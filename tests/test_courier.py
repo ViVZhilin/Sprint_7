@@ -21,9 +21,6 @@ class TestCourierCreation:
             random_string = ''.join(random.choice(letters) for i in range(length))
             return random_string
 
-        # создаём список, чтобы метод мог его вернуть
-        login_pass = []
-
         # генерируем логин, пароль и имя курьера
         login = generate_random_string(10)
         password = generate_random_string(10)
@@ -37,7 +34,7 @@ class TestCourierCreation:
         }
 
         # отправляем запрос на регистрацию курьера и сохраняем ответ в переменную response
-        response = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier', data=payload)
+        response = requests.post(Data.courier_url, data=payload)
         assert response.text == '{"ok":true}'
 
 
@@ -45,19 +42,19 @@ class TestCourierCreation:
     def test_cannot_create_duplicate_courier(self):
 
         self.courier = Data.register_new_courier_and_return_login_password(self)
-        self.base_url = 'https://qa-scooter.praktikum-services.ru/api/v1/courier'
+        self.base_url = Data.courier_url
         payload = {
             'login' : self.courier[0],
             'password': self.courier[1],
             'first_name' : self.courier[2]
         }
-        response = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier', data=payload)
+        response = requests.post(Data.courier_url, data=payload)
         assert response.status_code == 409
 
     @allure.title("Проверка заполнения всех обязательных параметров")
     def test_required_fields_for_courier_creation(self):
 
-        self.base_url = 'https://qa-scooter.praktikum-services.ru/api/v1/courier'
+        self.base_url = Data.courier_url
         for field in ["login", "password", "firstName"]:
             payload = {
                 "login": Data.register_new_courier_and_return_login_password(self)[0],
@@ -80,7 +77,7 @@ class TestCourierLogin:
             "password": "123456",
         }
 
-        self.base_url = 'https://qa-scooter.praktikum-services.ru/api/v1/courier/login'
+        self.base_url = Data.login_url
         response = requests.post(self.base_url, data = payload)
         assert response.status_code == 200
 
@@ -90,7 +87,7 @@ class TestCourierLogin:
 
     @allure.title("Проверка пустых значений обязательных полей при авторизации")
     def test_empty_required_fields_for_courier_login(self):
-        base_url = 'https://qa-scooter.praktikum-services.ru/api/v1/courier/login'
+        base_url = Data.login_url
 
         # Проверяем оба обязательных поля
         for field in ["login", "password"]:

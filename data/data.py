@@ -16,6 +16,9 @@ class Data:
     rent_time = 3
     delivery_date = "2023-10-10"
     comment = "Тестовый заказ"
+    base_url = "https://qa-scooter.praktikum-services.ru"
+    courier_url = f"{base_url}/api/v1/courier"
+    login_url = f"{base_url}/api/v1/courier/login"
 
 
     # метод регистрации нового курьера возвращает список из логина и пароля
@@ -43,7 +46,7 @@ class Data:
         }
 
         # отправляем запрос на регистрацию курьера и сохраняем ответ в переменную response
-        response = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier', data=payload)
+        response = requests.post(Data.courier_url, data=payload)
 
         # если регистрация прошла успешно (код ответа 201), добавляем в список логин и пароль курьера
         if response.status_code == 201:
